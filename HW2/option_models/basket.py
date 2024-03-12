@@ -19,7 +19,7 @@ def basket_check_args(spot, vol, corr_m, weights):
     
 def basket_price_mc_cv(
     strike, spot, vol, weights, texp, cor_m, 
-    intr=0.0, divr=0.0, cp=1, n_samples=10000
+    intr=0.0, divr=0.0, cp=1, n_samples=100000
 ):
     # price1 = MC based on BSM
     rand_st = np.random.get_state() # Store random state first
