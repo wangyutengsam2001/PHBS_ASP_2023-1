@@ -85,11 +85,6 @@ class cbarheston():
         )
         return res
     
-    def Laplace_transform(self, s):
-        alpha, beta = self.alpha(), self.beta()
-        return alpha*beta/s - 1/s**2 - (beta**2+1) * (alpha*beta**alpha) / (s+beta)**(alpha+1)
-    
-    
 
 def plot_figure5(c, v0, max_strike, texp):
 
@@ -113,51 +108,3 @@ def plot_figure5(c, v0, max_strike, texp):
     ax[1].set_xlabel('Variance Strike')
     ax[1].set_ylabel('Implied Volatility of variance')
     ax[1].set_title('Implied volatility of variance as a function of volatility strike')
-    
-def mc(path):
-    var_strikes = np.linspace(1e-2, .25, 100)
-    nonenan = path[~ np.isnan(path[:, -1]), :]
-    m = nonenan.mean(axis=1)
-    price = np.zeros(100)
-    l = nonenan.shape[0]
-    for i, vs in enumerate(var_strikes):
-        temp = m - vs
-        over0 = temp[temp > 0]
-        price[i] = sum(over0)/l
-    plt.plot(var_strikes, price)
-
-def b_sT(lbd, s, k, gamma, texp):
-    up = 2 * lbd * (np.exp(gamma * (texp - s)) - 1)
-    low = (gamma + k) * (np.exp(gamma * (texp - s)) - 1) + 2 * gamma
-    return up / low
-
-def lower_l(lbd, v_heston, texp, n=100):
-    v0, k, theta, epsilon = v_heston.v0, v_heston.k, v_heston.θ, v_heston.ε
-    gamma = np.sqrt(k ** 2 + epsilon ** 2 * 2 * lbd)
-    a0T = 0
-    for s in np.linspace(0, texp, n):
-        bsT = b_sT(lbd, s, k, gamma, texp)
-        a0T -= k * bsT * theta * texp / n
-    b0T = b_sT(lbd, 0, k, gamma, texp)
-    return np.exp(a0T - bsT * v0)
-
-def upper_l(lbd, c0, v_heston, texp):
-    l =  lower_l(lbd, v_heston, texp)
-    return (l - 1)/lbd ** 2 + c0/lbd
-
-def inv_lap(k, params, g_hat):
-    M, M2, a, n, λ_coef, β = params
-    temp = 0
-    for j in range(0, M2):
-        sum = 0
-        for l in range(n):
-            complex_part = λ_coef[l] + 2*np.pi*j/M2
-            complex_num = complex(a, complex_part)
-            
-            # function g_hat is needed
-            g_hat_num = g_hat(complex_num)
-
-            sum += β[l] * g_hat_num
-        temp += sum*np.exp(complex(0, 2*np.pi*k*j/M2))
-    return temp / M2 * np.exp(a*k)
-    

@@ -168,7 +168,7 @@ def L_C0_32(v_32, λ, T):
     y = v0/(k*θ)*(np.exp(k*θ*T) - 1)
 
     # scipy.special.hyp1f1 does not apply to complex number
-    # Instead we expand M to 3rd term and it is precise enough
+    # Instead we expand M to 3rd term and it is precision enough
     z = -2/(ε**2*y)
     M = 1 + α/γ*z + α*(α+1)/(γ*(γ+1))*z**2/2 + α*(α+1)*(α+2)/(γ*(γ+1)*(γ+2))*z**3/6
 
@@ -241,11 +241,10 @@ def inv_algo_ghat(params, g_hat):
     return res
 
 
-def invlt(t, fs, λ):
+def invlt(t, fs, sigma = 0.2, omega = 200):
     """
     inverse Laplace transform using trapizod method
     """
-    sigma, omega = λ.real, λ.imag
     nint = omega * 50
 
     omegadim = np.linspace(0, omega, nint+1, endpoint=True)
